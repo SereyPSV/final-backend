@@ -1,0 +1,296 @@
+{
+  "users": [
+    {
+      "id": "001",
+      "login": "admin",
+      "password": "111111",
+      "registred_at": "2023-09-23 09:20",
+      "role_id": 0
+    },
+    {
+      "id": "002",
+      "login": "seller",
+      "password": "111111",
+      "registred_at": "2041-08-16 04:48",
+      "role_id": 1
+    },
+    {
+      "id": "003",
+      "login": "buyer",
+      "password": "111111",
+      "registred_at": "2045-11-07 12:33",
+      "role_id": 2
+    },
+    {
+      "id": "004",
+      "login": "sergey",
+      "password": "111111",
+      "registred_at": "2045-11-07 12:33",
+      "role_id": 0
+    },
+    {
+      "login": "natalia",
+      "password": "111111",
+      "registred_at": "2060-10-25 14:57",
+      "role_id": 1,
+      "id": "9kLGv5-"
+    }
+  ],
+  "roles": [
+    {
+      "id": 0,
+      "name": "Администратор"
+    },
+    {
+      "id": 1,
+      "name": "Продавец"
+    },
+    {
+      "id": 2,
+      "name": "Покупатель"
+    },
+    {
+      "id": 3,
+      "name": "Гость"
+    }
+  ],
+  "product_categories": [
+    {
+      "id": "1001",
+      "group": "1001",
+      "title": "Строительные материалы",
+      "image_url": "https://firebasestorage.googleapis.com/v0/b/hardware-store-70047.appspot.com/o/building-materials%2Fbuilding-materials.png?alt=media&token=4b565f00-cc62-475f-95e0-4ba98d276795&_gl=1*flo3mx*_ga*MTEwNzcyOTM4Mi4xNjk1NjU4NDA4*_ga_CW55HF8NVT*MTY5Njg4MjM2OS4zLjEuMTY5Njg4MjQ5MS42MC4wLjA."
+    },
+    {
+      "id": "1002",
+      "group": "1002",
+      "title": "Отделочные материалы",
+      "image_url": "https://firebasestorage.googleapis.com/v0/b/hardware-store-70047.appspot.com/o/decorating-material%2Fdecorating-material-186%D1%87139.png?alt=media&token=8b8859b3-9d7f-4534-9b86-e32765bed229"
+    },
+    {
+      "id": "1003",
+      "group": "1003",
+      "title": "Инструменты",
+      "image_url": "https://firebasestorage.googleapis.com/v0/b/hardware-store-70047.appspot.com/o/instruments%2Finstruments_200x166.png?alt=media&token=9b1a789f-335c-4008-b2be-052e11be28de"
+    },
+    {
+      "id": "1004",
+      "group": "1004",
+      "title": "Сантехника",
+      "image_url": "https://firebasestorage.googleapis.com/v0/b/hardware-store-70047.appspot.com/o/plumbing%2Fpngwing2.png?alt=media&token=d0537258-d1aa-483c-b25e-3877db451d5f"
+    },
+    {
+      "id": "1005",
+      "group": "1005",
+      "title": "Электрика",
+      "image_url": "https://firebasestorage.googleapis.com/v0/b/hardware-store-70047.appspot.com/o/electrics%2Felectrics1.png?alt=media&token=bd632642-65a9-4bba-a225-5e08379cb0d2"
+    },
+    {
+      "id": "1006",
+      "group": "1006",
+      "title": "Крепеж",
+      "image_url": "https://firebasestorage.googleapis.com/v0/b/hardware-store-70047.appspot.com/o/fasteners%2Ffasteners22.png?alt=media&token=5643036e-7697-4529-8959-b3371358f0ae"
+    },
+    {
+      "id": "1007",
+      "group": "1007",
+      "title": "Товары для дома",
+      "image_url": "https://firebasestorage.googleapis.com/v0/b/hardware-store-70047.appspot.com/o/household%2Fpngwing1.png?alt=media&token=46c8f630-6403-429b-bbf9-88428179ed38"
+    },
+    {
+      "id": "1008",
+      "group": "1008",
+      "title": "Бытовая техника",
+      "image_url": "https://firebasestorage.googleapis.com/v0/b/hardware-store-70047.appspot.com/o/appliances%2Fappliances1.png?alt=media&token=73d724d5-2d6a-434a-a086-e74fdb990192"
+    },
+    {
+      "id": "1009",
+      "group": "1009",
+      "title": "Автотовары",
+      "image_url": "https://firebasestorage.googleapis.com/v0/b/hardware-store-70047.appspot.com/o/auto-products%2Fauto-products2.png?alt=media&token=0e1002a1-1632-4ea6-82ea-ade3e7384a0a"
+    },
+    {
+      "id": "1010",
+      "group": "1010",
+      "title": "Спорт и отдых",
+      "image_url": "https://firebasestorage.googleapis.com/v0/b/hardware-store-70047.appspot.com/o/sports-recreation%2Fsports-recreation2.png?alt=media&token=ebee4ca2-bbbd-4abe-acd4-34a6f3f8189f"
+    },
+    {
+      "id": "1011",
+      "group": "1011",
+      "title": "Спорт и отдых",
+      "image_url": "https://firebasestorage.googleapis.com/v0/b/hardware-store-70047.appspot.com/o/sports-recreation%2Fsports-recreation2.png?alt=media&token=ebee4ca2-bbbd-4abe-acd4-34a6f3f8189f"
+    },
+    {
+      "id": "1012",
+      "group": "1012",
+      "title": "Спорт и отдых",
+      "image_url": "https://firebasestorage.googleapis.com/v0/b/hardware-store-70047.appspot.com/o/sports-recreation%2Fsports-recreation2.png?alt=media&token=ebee4ca2-bbbd-4abe-acd4-34a6f3f8189f"
+    },
+    {
+      "id": "1019",
+      "group": "1019",
+      "title": "Автотовары",
+      "image_url": "https://ixbt.online/live/images/original/08/10/60/2019/10/07/6adc725b95.jpg?w=877"
+    }
+  ],
+  "products": [
+    {
+      "id": "5001",
+      "group": "1001",
+      "image_url": "https://static.insales-cdn.com/r/5LvcfOJg_U8/rs:fit:1000:0:1/q:100/plain/images/products/1/3163/499166299/17890884-2.jpg@webp",
+      "product_name": "Фен строительный",
+      "price": 1169,
+      "product_description": "Строительный фен DEKO HG2200W удобен для широкого применения, сочетает в себе компактность, легкость, простоту в использовании.",
+      "product_detailed_description": "",
+      "amount": "50"
+    },
+    {
+      "id": "5002",
+      "group": "1002",
+      "image_url": "https://static.insales-cdn.com/r/ztU-R6Xzq10/rs:fit:1000:1000:1/plain/images/products/1/2070/499165206/11073025-1.jpg@webp",
+      "product_name": "Шлифмашина угловая",
+      "price": 330,
+      "product_description": "Малая одноручная угловая шлифовальная машина. Компактный универсальный инструмент, имеющий малые габариты и вес для шлифовки и резания разнообразных материалов с наиболее распространенным диаметром оснастки 125 мм. Уменьшенный диаметр моторного блока обеспечивает удобный хват рукой.",
+      "amount": "35"
+    },
+    {
+      "id": "5003",
+      "group": "1003",
+      "image_url": "https://firebasestorage.googleapis.com/v0/b/hardware-store-70047.appspot.com/o/building-materials%2FCeresit_CM-17.png?alt=media&token=edd24f1b-18d5-4ea1-93fb-3de81276f27e&_gl=1*1efwdbz*_ga*MTEwNzcyOTM4Mi4xNjk1NjU4NDA4*_ga_CW55HF8NVT*MTY5Njg4MjM2OS4zLjEuMTY5Njg4MzgxMS40NS4wLjA.",
+      "product_name": "Шлифмашина угловая",
+      "price": 70,
+      "product_description": "Малая одноручная угловая шлифовальная машина. Компактный универсальный инструмент, имеющий малые габариты и вес для шлифовки и резания разнообразных материалов с наиболее распространенным диаметром оснастки 125 мм. Уменьшенный диаметр моторного блока обеспечивает удобный хват рукой.",
+      "amount": "35"
+    },
+    {
+      "id": "5004",
+      "group": "1001",
+      "image_url": "https://static.insales-cdn.com/r/ztU-R6Xzq10/rs:fit:1000:1000:1/plain/images/products/1/2070/499165206/11073025-1.jpg@webp",
+      "product_name": "Шлифмашина угловая",
+      "price": 640,
+      "product_description": "Малая одноручная угловая шлифовальная машина. Компактный универсальный инструмент, имеющий малые габариты и вес для шлифовки и резания разнообразных материалов с наиболее распространенным диаметром оснастки 125 мм. Уменьшенный диаметр моторного блока обеспечивает удобный хват рукой.",
+      "amount": "35"
+    },
+    {
+      "id": "5005",
+      "group": "1002",
+      "image_url": "https://static.insales-cdn.com/r/ztU-R6Xzq10/rs:fit:1000:1000:1/plain/images/products/1/2070/499165206/11073025-1.jpg@webp",
+      "product_name": "Шлифмашина угловая",
+      "price": 1970,
+      "product_description": "Малая одноручная угловая шлифовальная машина. Компактный универсальный инструмент, имеющий малые габариты и вес для шлифовки и резания разнообразных материалов с наиболее распространенным диаметром оснастки 125 мм. Уменьшенный диаметр моторного блока обеспечивает удобный хват рукой.",
+      "amount": "35"
+    },
+    {
+      "id": "5006",
+      "group": "1003",
+      "image_url": "https://static.insales-cdn.com/r/ztU-R6Xzq10/rs:fit:1000:1000:1/plain/images/products/1/2070/499165206/11073025-1.jpg@webp",
+      "product_name": "Шлифмашина угловая",
+      "price": 8670,
+      "product_description": "Малая одноручная угловая шлифовальная машина. Компактный универсальный инструмент, имеющий малые габариты и вес для шлифовки и резания разнообразных материалов с наиболее распространенным диаметром оснастки 125 мм. Уменьшенный диаметр моторного блока обеспечивает удобный хват рукой.",
+      "amount": "35"
+    },
+    {
+      "id": "5007",
+      "group": "1004",
+      "image_url": "https://static.insales-cdn.com/r/ztU-R6Xzq10/rs:fit:1000:1000:1/plain/images/products/1/2070/499165206/11073025-1.jpg@webp",
+      "product_name": "Шлифмашина угловая",
+      "price": 2670,
+      "product_description": "Малая одноручная угловая шлифовальная машина. Компактный универсальный инструмент, имеющий малые габариты и вес для шлифовки и резания разнообразных материалов с наиболее распространенным диаметром оснастки 125 мм. Уменьшенный диаметр моторного блока обеспечивает удобный хват рукой.",
+      "amount": "35"
+    },
+    {
+      "id": "5008",
+      "group": "1001",
+      "image_url": "https://static.insales-cdn.com/r/ztU-R6Xzq10/rs:fit:1000:1000:1/plain/images/products/1/2070/499165206/11073025-1.jpg@webp",
+      "product_name": "Шлифмашина угловая",
+      "price": 25701,
+      "product_description": "Малая одноручная угловая шлифовальная машина. Компактный универсальный инструмент, имеющий малые габариты и вес для шлифовки и резания разнообразных материалов с наиболее распространенным диаметром оснастки 125 мм. Уменьшенный диаметр моторного блока обеспечивает удобный хват рукой.",
+      "amount": "35"
+    },
+    {
+      "id": "5009",
+      "group": "1002",
+      "image_url": "https://static.insales-cdn.com/r/ztU-R6Xzq10/rs:fit:1000:1000:1/plain/images/products/1/2070/499165206/11073025-1.jpg@webp",
+      "product_name": "Шлифмашина угловая",
+      "price": 2300,
+      "product_description": "Малая одноручная угловая шлифовальная машина. Компактный универсальный инструмент, имеющий малые габариты и вес для шлифовки и резания разнообразных материалов с наиболее распространенным диаметром оснастки 125 мм. Уменьшенный диаметр моторного блока обеспечивает удобный хват рукой.",
+      "amount": "35"
+    },
+    {
+      "id": "5010",
+      "group": "1006",
+      "image_url": "https://static.insales-cdn.com/r/ztU-R6Xzq10/rs:fit:1000:1000:1/plain/images/products/1/2070/499165206/11073025-1.jpg@webp",
+      "product_name": "Шлифмашина угловая",
+      "price": 470,
+      "product_description": "Малая одноручная угловая шлифовальная машина. Компактный универсальный инструмент, имеющий малые габариты и вес для шлифовки и резания разнообразных материалов с наиболее распространенным диаметром оснастки 125 мм. Уменьшенный диаметр моторного блока обеспечивает удобный хват рукой.",
+      "amount": "35"
+    },
+    {
+      "id": "5011",
+      "group": "1004",
+      "image_url": "https://static.insales-cdn.com/r/5LvcfOJg_U8/rs:fit:1000:0:1/q:100/plain/images/products/1/3163/499166299/17890884-2.jpg@webp",
+      "product_name": "Фен строительный",
+      "price": 69,
+      "product_description": "Строительный фен DEKO HG2200W удобен для широкого применения, сочетает в себе компактность, легкость, простоту в использовании.",
+      "product_detailed_description": "",
+      "amount": "50"
+    },
+    {
+      "id": "5012",
+      "group": "1006",
+      "image_url": "https://static.insales-cdn.com/r/ztU-R6Xzq10/rs:fit:1000:1000:1/plain/images/products/1/2070/499165206/11073025-1.jpg@webp",
+      "product_name": "Шлифмашина угловая",
+      "price": 4670,
+      "product_description": "Малая одноручная угловая шлифовальная машина. Компактный универсальный инструмент, имеющий малые габариты и вес для шлифовки и резания разнообразных материалов с наиболее распространенным диаметром оснастки 125 мм. Уменьшенный диаметр моторного блока обеспечивает удобный хват рукой.",
+      "amount": "35"
+    },
+    {
+      "id": "5013",
+      "group": "1005",
+      "image_url": "https://firebasestorage.googleapis.com/v0/b/hardware-store-70047.appspot.com/o/building-materials%2FCeresit_CM-17.png?alt=media&token=edd24f1b-18d5-4ea1-93fb-3de81276f27e&_gl=1*1efwdbz*_ga*MTEwNzcyOTM4Mi4xNjk1NjU4NDA4*_ga_CW55HF8NVT*MTY5Njg4MjM2OS4zLjEuMTY5Njg4MzgxMS40NS4wLjA.",
+      "product_name": "Шлифмашина угловая",
+      "price": 150,
+      "product_description": "Малая одноручная угловая шлифовальная машина. Компактный универсальный инструмент, имеющий малые габариты и вес для шлифовки и резания разнообразных материалов с наиболее распространенным диаметром оснастки 125 мм. Уменьшенный диаметр моторного блока обеспечивает удобный хват рукой.",
+      "amount": "35"
+    }
+  ],
+  "shopping_cart": [
+    {
+      "product_id": "5001",
+      "user_cart_id": "004",
+      "id": 1,
+      "amount_in_cart": 4
+    },
+    {
+      "product_id": "5002",
+      "user_cart_id": "004",
+      "amount_in_cart": 3,
+      "id": 2
+    },
+    {
+      "product_id": "5013",
+      "user_cart_id": "002",
+      "amount_in_cart": 3,
+      "id": 3
+    },
+    {
+      "product_id": "5002",
+      "user_cart_id": "002",
+      "amount_in_cart": 3,
+      "id": 2
+    },
+    {
+      "product_id": "5013",
+      "user_cart_id": "001",
+      "amount_in_cart": 3,
+      "id": 3
+    },
+    {
+      "product_id": "5001",
+      "user_cart_id": "001",
+      "amount_in_cart": 3,
+      "id": 4
+    }
+  ]
+}

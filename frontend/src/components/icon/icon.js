@@ -1,0 +1,18 @@
+import styled from 'styled-components';
+
+const IconContainer = ({ className, id, ...props }) => (
+	<div className={className} {...props}>
+		<i className={`fa ${id}`} aria-hidden="true"></i>
+	</div>
+);
+
+export const Icon = styled(IconContainer)`
+	font-size: ${({ size = '24px' }) => size};
+	margin: ${({ margin = '0' }) => margin};
+	color: ${({ disabled, color = '#fcc82a' }) => (disabled ? '#fcedc0' : color)};
+
+	&:hover {
+		cursor: ${({ disabled }) => (disabled ? '' : 'pointer')};
+		color: ${({ disabled, color = '#ff7f00' }) => (disabled ? '#fcedc0' : color)};
+	}
+`;
