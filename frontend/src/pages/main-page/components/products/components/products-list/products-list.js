@@ -1,8 +1,12 @@
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { trimDescription } from '../utils';
+import { selectProducts } from '../../../../../../selectors';
 
-const ProductsListContainer = ({ className, products }) => {
+const ProductsListContainer = ({ className }) => {
+	const products = useSelector(selectProducts);
+
 	return (
 		<div className="products">
 			{products.map(({ id, productName, imageUrl, description, price }) => (
@@ -15,7 +19,7 @@ const ProductsListContainer = ({ className, products }) => {
 						<div className="product-description">
 							{trimDescription(description, 250)}
 						</div>
-						<div className="product-price">{`${price.toFixed(2)} руб`}</div>
+						<div className="product-price">{price.toFixed(2)} руб</div>
 					</div>
 				</Link>
 			))}

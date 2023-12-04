@@ -1,2 +1,3 @@
-export const removeProductAsync = (requestServer, productId) => () =>
-	requestServer('removeProduct', productId);
+import { request } from '../utils/request';
+
+export const removeProductAsync = (id) => () => request(`/products/${id}`, 'DELETE');

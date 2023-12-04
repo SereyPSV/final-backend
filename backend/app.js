@@ -8,6 +8,7 @@ const {
   getRoles,
   updateUser,
   deleteUser,
+  getUser,
 } = require("./controllers/user");
 const {
   addProduct,
@@ -17,19 +18,18 @@ const {
   getProduct,
 } = require("./controllers/product");
 const { getCategories } = require("./controllers/categories");
+const {
+  addOrUpdateShoppingCart,
+  deleteShoppingCart,
+  getShoppingCart,
+} = require("./controllers/shoppingCart");
 const mapUser = require("./helpers/mapUser");
 const authenticated = require("./middlewares/authenticated");
 const hasRole = require("./middlewares/hasRole");
 const ROLES = require("./constants/roles");
 const mapProduct = require("./helpers/mapProduct");
-const {
-  addShoppingCart,
-  getShoppingCart,
-} = require("./controllers/shoppingCart");
 const mapCategory = require("./helpers/mapCategory");
-const mapShoppingCart = require("./helpers/mapShoppingCart");
 
-//---
 const port = 3003;
 const app = express();
 
@@ -86,31 +86,59 @@ app.get("/products/:id", async (req, res) => {
   res.send({ data: mapProduct(product) });
 });
 
+//------------------------------------------------
 app.use(authenticated);
-
 //------------------------------------------------
-app.get("/shoppingCart/:id", async (req, res) => {
-  const shoppingCart = await getShoppingCart(req.params.id);
+//---------ShoppingCart get fo user
+app.get("/shoppingCart", async (req, res) => {
+  const newShoppingCart = await getShoppingCart(req.user.id);
 
-  res.send({ data: shoppingCart });
+  res.send({ data: newShoppingCart });
 });
-//------------------------------------------------
-app.post("/products", hasRole([ROLES.ADMIN, ROLES.BUYER]), async (req, res) => {
-  const newProduct = await addProduct({
-    productName: req.body.product_name,
-    group: req.body.group,
-    imageUrl: req.body.image_url,
-    productDescription: req.body.product_description,
-    price: req.body.price,
-    amount: req.body.amount,
+//---------ShoppingCart add or edit
+app.post("/shoppingCart", async (req, res) => {
+  const newShoppingCart = await addOrUpdateShoppingCart(req.user.id, {
+    buyer: req.user.id,
+    count: req.body.count,
+    product: req.body.productId,
   });
 
-  res.send({ data: mapProduct(newProduct) });
+  res.send({ data: newShoppingCart });
 });
+//---------ShoppingCart delete
+app.delete(
+  "/shoppingCart/:shoppingCartId",
+  hasRole([ROLES.ADMIN, ROLES.SELLER, ROLES.BUYER]),
+  async (req, res) => {
+    await deleteShoppingCart(req.user.id, req.params.shoppingCartId);
+
+    res.send({ error: null });
+  }
+);
+//------------------------------------------------
+//----------  PRODUCT  ---------------------------
+//------------------------------------------------
+
+app.post(
+  "/products",
+  hasRole([ROLES.ADMIN, ROLES.SELLER]),
+  async (req, res) => {
+    const newProduct = await addProduct({
+      group: req.body.group,
+      image_url: req.body.imageUrl,
+      product_name: req.body.productName,
+      product_description: req.body.description,
+      price: req.body.price,
+      amount: req.body.amount,
+    });
+
+    res.send({ data: newProduct });
+  }
+);
 
 app.patch(
   "/products/:id",
-  hasRole([ROLES.ADMIN, ROLES.BUYER]),
+  hasRole([ROLES.ADMIN, ROLES.SELLER]),
   async (req, res) => {
     const updatedProduct = await editProduct(req.params.id, {
       product_name: req.body.productName,
@@ -127,8 +155,9 @@ app.patch(
 
 app.delete(
   "/products/:id",
-  hasRole([ROLES.ADMIN, ROLES.BUYER, ROLES.SELLER, ROLES.GUEST]),
+  hasRole([ROLES.ADMIN, ROLES.SELLER]),
   async (req, res) => {
+    console.log(req.params.id);
     await deleteProduct(req.params.id);
 
     res.send({ error: null });
@@ -141,12 +170,19 @@ app.get("/users", hasRole([ROLES.ADMIN]), async (req, res) => {
   res.send({ data: users.map(mapUser) });
 });
 
+app.get("/users/:id", async (req, res) => {
+  console.log(req.user.id, "user", req.params.id);
+  const product = await getUser(req.user.id);
+
+  res.send({ data: product });
+});
+//----Получение ролей----//
 app.get("/users/roles", hasRole([ROLES.ADMIN]), async (req, res) => {
   const roles = getRoles();
 
   res.send({ data: roles });
 });
-
+//----Редактирование роли пользователей----//
 app.patch("/users/:id", hasRole([ROLES.ADMIN]), async (req, res) => {
   const newUser = await updateUser(req.params.id, {
     role: req.body.roleId,
@@ -154,7 +190,7 @@ app.patch("/users/:id", hasRole([ROLES.ADMIN]), async (req, res) => {
 
   res.send({ data: mapUser(newUser) });
 });
-
+//----Удаление пользователей----//
 app.delete("/users/:id", hasRole([ROLES.ADMIN]), async (req, res) => {
   await deleteUser(req.params.id);
 
@@ -170,39 +206,3 @@ mongoose
       err ? console.log(err) : console.log(`Server started on port ${port}`);
     });
   });
-
-// // require("dotenv").config();
-
-// // const { addComment, deleteComment } = require('./controllers/comment');
-// // const mapComment = require('./helpers/mapComment');
-
-// // app.use(express.static('../frontend/build'))
-
-// // app.post("/posts/:id/comments", async (req, res) => {
-// //   const newComment = await addComment(req.params.id, {
-// //     content: req.body.content,
-// //     author: req.user.id,
-// //   });
-
-// //   res.send({ data: mapComment(newComment) });
-// // });
-
-// // app.delete(
-// //   "/posts/:postId/comments/:commentId",
-// //   hasRole([ROLES.ADMIN, ROLES.MODERATOR]),
-// //   async (req, res) => {
-// //     await deleteComment(req.params.postId, req.params.commentId);
-
-// //     res.send({ error: null });
-// //   }
-// // );
-
-// mongoose
-//   .connect(
-//     "mongodb+srv://SergStore:SergStore16460@cluster0.w6v8wcs.mongodb.net/store?retryWrites=true&w=majority"
-//   )
-//   .then(() => {
-//     app.listen(port, () => {
-//       console.log(`Server started on port ${port}`);
-//     });
-//   });

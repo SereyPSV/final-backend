@@ -2,22 +2,22 @@ const mongoose = require("mongoose");
 
 const ShoppingCartSchema = mongoose.Schema(
   {
-    userCartId: {
-      type: String,
-      required: true,
+    buyer: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
-    productId: {
-      type: String,
-      required: true,
-    },
-    amountInCart: {
+    count: {
       type: Number,
       required: true,
+    },
+    product: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
     },
   },
   { timestamps: true }
 );
 
-const ShoppingCart = mongoose.model("ShoppingCart", ShoppingCartSchema);
+const ShoppingCart = mongoose.model("Shopping_Cart", ShoppingCartSchema);
 
 module.exports = ShoppingCart;

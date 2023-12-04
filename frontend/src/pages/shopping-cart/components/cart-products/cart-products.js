@@ -2,14 +2,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Counter, H2, H3, Icon } from '../../../../components';
 import { Link } from 'react-router-dom';
 import { CLOSE_MODAL, openModal, removeProductFromCartAsync } from '../../../../actions';
-import { useServerRequest } from '../../../../hooks';
 import { styled } from 'styled-components';
-import { selectShoppingCart } from '../../../../selectors';
+import { selectProducts, selectShoppingCart } from '../../../../selectors';
 
-const CartContainer = ({ className, userId, products, onProductInCartUpdate }) => {
+const CartContainer = ({ className }) => {
 	const dispatch = useDispatch();
-	const requestServer = useServerRequest();
 	const shoppingCart = useSelector(selectShoppingCart);
+	const products = useSelector(selectProducts);
+	console.log(products);
 
 	let totalCostOrder = 0;
 	let shoppingCartWithImg = [];
@@ -32,9 +32,7 @@ const CartContainer = ({ className, userId, products, onProductInCartUpdate }) =
 			openModal({
 				text: 'Удалить товар из корзины?',
 				onConfirm: () => {
-					dispatch(
-						removeProductFromCartAsync(requestServer, userId, idInCart, id),
-					);
+					// dispatch(removeProductFromCartAsync(userId, idInCart, id));
 					dispatch(CLOSE_MODAL);
 				},
 				onCancel: () => {
@@ -61,10 +59,7 @@ const CartContainer = ({ className, userId, products, onProductInCartUpdate }) =
 							<div className="products-order">
 								<div className="cost-per-piece">{price} руб/шт</div>
 
-								<Counter
-									amountInCart={amountInCart}
-									onProductInCartUpdate={onProductInCartUpdate}
-								/>
+								<Counter />
 
 								<div className="total-cost-product">
 									{amountInCart * Number(price)} руб

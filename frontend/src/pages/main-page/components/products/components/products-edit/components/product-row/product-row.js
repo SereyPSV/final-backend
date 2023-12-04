@@ -6,31 +6,18 @@ import { trimDescription } from '../../../utils';
 import { useServerRequest } from '../../../../../../../../hooks';
 import {
 	CLOSE_MODAL,
-	RESET_PRODUCT_DATA,
 	openModal,
 	removeProductAsync,
 } from '../../../../../../../../actions';
 import { selectUserId } from '../../../../../../../../selectors';
 import styled from 'styled-components';
-import { useLayoutEffect } from 'react';
 
-const ProductRowContainer = ({
-	className,
-	product,
-	productCategories,
-	isDeleting,
-	setIsDeleting,
-}) => {
-	const { productId, productName, group, price, amount, imageUrl } = product;
+const ProductRowContainer = ({ className, product, isDeleting, setIsDeleting }) => {
+	const { id, productName, titleGroup, price, amount, imageUrl } = product;
 	const dispatch = useDispatch();
 	const requestServer = useServerRequest();
 	const navigate = useNavigate();
 	const userId = useSelector(selectUserId);
-	const [groupTitle] = productCategories.filter((item) => item.group === group);
-
-	useLayoutEffect(() => {
-		dispatch(RESET_PRODUCT_DATA);
-	}, [dispatch]);
 
 	const onProductEdit = (productId) => {
 		dispatch(
@@ -40,14 +27,10 @@ const ProductRowContainer = ({
 				width: '1000px',
 				isEdit: true,
 				onConfirm: () => {
-					dispatch(removeProductAsync(requestServer, productId)).then(() => {
-						setIsDeleting(!isDeleting);
-						navigate('/products/edit');
-					});
+					dispatch(removeProductAsync(productId)).then(() => navigate('/'));
 					dispatch(CLOSE_MODAL);
 				},
 				onCancel: () => {
-					// TODO setIsDeleting(!isDeleting);
 					dispatch(CLOSE_MODAL);
 				},
 			}),
@@ -56,16 +39,14 @@ const ProductRowContainer = ({
 	const onProductRemove = (productId) => {
 		dispatch(
 			openModal({
-				text: 'Удалить товар?',
+				text: `Удалить товар?${productId}`,
 				width: '500px',
 				isEdit: false,
 				onConfirm: () => {
-					dispatch(removeProductAsync(requestServer, productId, userId)).then(
-						() => {
-							setIsDeleting(!isDeleting);
-							navigate('/products/edit');
-						},
-					);
+					dispatch(removeProductAsync(productId)).then(() => {
+						setIsDeleting(!isDeleting);
+						navigate('/products/edit');
+					});
 
 					dispatch(CLOSE_MODAL);
 				},
@@ -80,17 +61,17 @@ const ProductRowContainer = ({
 		<div className={className}>
 			<TableRow border={true}>
 				<div className="name-column">{trimDescription(productName, 30)}</div>
-				<div className="category-column">{groupTitle.title}</div>
-				<div className="price-column">{price} руб.</div>
+				<div className="category-column">{titleGroup}</div>
+				<div className="price-column">{price.toFixed(2)} руб</div>
 				<div className="amount-column">{amount} </div>
 				<div className="image-url-column">
 					<img src={imageUrl} alt={`${productName}`} />
 				</div>
 				<div className="edit-or-remove-column">
-					<Button width={'140px'} onClick={() => onProductEdit(productId)}>
+					<Button width={'140px'} onClick={() => onProductEdit(id)}>
 						Редактировать
 					</Button>
-					<Button width={'140px'} onClick={() => onProductRemove(productId)}>
+					<Button width={'140px'} onClick={() => onProductRemove(id)}>
 						Удалить товар
 					</Button>
 				</div>

@@ -11,24 +11,16 @@ import { Cart } from './components';
 const ShoppingCartContainer = ({ className }) => {
 	const dispatch = useDispatch();
 
-	const userId = useSelector(selectUserId);
-	console.log(userId);
-
 	useEffect(() => {
-		request(`/shoppingCart/${userId}`, 'GET').then((shoppingCart) => {
-			console.log(shoppingCart.data);
-			// dispatch(setShoppingCartData(shoppingCart.data));
+		request(`/shoppingCart`).then((shoppingCart) => {
+			dispatch(setShoppingCartData(shoppingCart.data));
 		});
-	}, [userId]);
-
-	// const onProductInCartUpdate = (productId, userId, basketCounter) => {
-	// 	dispatch(setProductInCartAsync(requestServer, userId, productId, basketCounter));
-	// };
+	}, [dispatch]);
 
 	return (
 		<div>
 			<H2>Корзина</H2>
-			{/* <Cart /> */}
+			<Cart />
 			<div className="total-cost-order">
 				<div className="total-cost-order-wrapper">
 					<div className="total-cost-order-position">

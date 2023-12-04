@@ -5,13 +5,13 @@ import { PAGINATION_LIMIT, ROLE, SORT_BY_PRICE_OR_NAME } from '../../../../const
 import { debounce } from './components/utils';
 import { Link, useMatch } from 'react-router-dom';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
-import { selectProductCategories, selectUserRole } from '../../../../selectors';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectProducts, selectUserRole } from '../../../../selectors';
 import { request } from '../../../../utils/request';
 import { checkAccess } from '../../../../utils';
+import { setProductsData } from '../../../../actions';
 
 const ProductsContainer = ({ className, sortingCategory }) => {
-	const [products, setProducts] = useState([]);
 	const [page, setPage] = useState(1);
 	const [lastPage, setLastPage] = useState(1);
 	const [searchPhrase, setSearchPhrase] = useState('');
@@ -19,23 +19,21 @@ const ProductsContainer = ({ className, sortingCategory }) => {
 	const [sortSelectionProducts, setSortSelectionProducts] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
-	const productCategories = useSelector(selectProductCategories);
 	const isEditing = useMatch('/products/edit');
 	const roleId = useSelector(selectUserRole);
 	const isAllowed = checkAccess([ROLE.ADMIN, ROLE.SELLER], roleId);
-
-	console.log('--------------', productCategories);
+	const dispatch = useDispatch();
+	const products = useSelector(selectProducts);
 
 	useEffect(() => {
 		setIsLoading(true);
 		request(`/products?search=${searchPhrase}&page=${page}&limit=${PAGINATION_LIMIT}`)
 			.then(({ data: { products, lastPage } }) => {
-				setProducts(products);
+				dispatch(setProductsData(products));
 				setLastPage(lastPage);
 			})
 			.finally(() => setIsLoading(false));
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [page, shouldSearch]);
+	}, [dispatch, page, shouldSearch, isDeleting]);
 
 	const startDelayedSearch = useMemo(() => debounce(setShouldSearch, 2000), []);
 
@@ -89,14 +87,9 @@ const ProductsContainer = ({ className, sortingCategory }) => {
 						<ProductsEdit
 							isDeleting={isDeleting}
 							setIsDeleting={setIsDeleting}
-							products={products}
-							productCategories={productCategories}
 						/>
 					) : (
-						<ProductsList
-							products={products}
-							productCategories={productCategories}
-						/>
+						<ProductsList />
 					)}
 				</div>
 			) : (

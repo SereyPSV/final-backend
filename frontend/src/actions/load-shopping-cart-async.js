@@ -1,4 +1,4 @@
-import { setShoppingCartData } from './set-shopping-cart';
+import { setShoppingCartData } from './set-shopping-cart-data';
 
 export const loadShoppingCartAsync = (requestServer, productId, userId) => (dispatch) =>
 	requestServer('fetchShoppingCart', productId, userId).then((shoppingCartData) => {

@@ -2,14 +2,7 @@ import { useState } from 'react';
 import { Icon } from '../../components';
 import { styled } from 'styled-components';
 
-const CounterContainer = ({
-	className,
-	productId,
-	userId,
-	amountInCart = 1,
-	onProductInCartUpdate,
-}) => {
-	const [basketCounter, setBasketCounter] = useState(amountInCart);
+const CounterContainer = ({ className, basketCounter, setBasketCounter }) => {
 	return (
 		<div className={className}>
 			<div className="into-basket">
@@ -20,7 +13,6 @@ const CounterContainer = ({
 						id="fa-minus"
 						onClick={() => {
 							setBasketCounter(basketCounter - 1);
-							onProductInCartUpdate(productId, userId, basketCounter);
 						}}
 					/>
 				</div>
@@ -32,7 +24,6 @@ const CounterContainer = ({
 						id="fa-plus"
 						onClick={() => {
 							setBasketCounter(basketCounter + 1);
-							onProductInCartUpdate(productId, userId, basketCounter);
 						}}
 					/>
 				</div>

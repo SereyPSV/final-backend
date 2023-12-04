@@ -1,14 +1,21 @@
-import styled from 'styled-components';
+import { useSelector } from 'react-redux';
+import { selectProductCategories, selectProducts } from '../../../../../../selectors';
 import { TableRow, ProductRow } from './components';
+import styled from 'styled-components';
 
-const ProductsEditContainer = ({
-	className,
-	products,
-	productCategories,
-	isDeleting,
-	setIsDeleting,
-}) => {
-	console.log(products);
+const ProductsEditContainer = ({ className, isDeleting, setIsDeleting }) => {
+	const products = useSelector(selectProducts);
+	const productCategories = useSelector(selectProductCategories);
+
+	let productsAdvanced = [];
+	products.forEach((product) => {
+		productCategories.forEach((categories) => {
+			if (categories.group === product.group) {
+				productsAdvanced.push({ ...product, titleGroup: categories.title });
+			}
+		});
+	});
+
 	return (
 		<div className={className}>
 			<div>
@@ -21,12 +28,11 @@ const ProductsEditContainer = ({
 					<div className="edit-or-remove-column column">Действия</div>
 				</TableRow>
 				<div className="product-list-row">
-					{products.map((product) => {
+					{productsAdvanced.map((product) => {
 						return (
 							<ProductRow
-								key={product.id}
 								product={product}
-								productCategories={productCategories}
+								key={product.id}
 								isDeleting={isDeleting}
 								setIsDeleting={setIsDeleting}
 							/>

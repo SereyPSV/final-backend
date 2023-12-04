@@ -1,8 +1,10 @@
 const Product = require("../models/Product");
 
 // add
-function addProduct(product) {
-  return Product.create(product);
+async function addProduct(product) {
+  console.log("----------ppp________", product);
+  const newProduct = await Product.create(product);
+  return newProduct;
 }
 
 // edit
@@ -25,7 +27,8 @@ async function getProducts(search = "", limit = 6, page = 1) {
     Product.find({ product_name: { $regex: search, $options: "i" } })
       .limit(limit)
       .skip((page - 1) * limit)
-      .sort({ product_description: -1 }),
+      .sort({ product_description: -1 })
+      .sort({ price: -1 }),
     Product.countDocuments({ product_name: { $regex: search, $options: "i" } }),
   ]);
 

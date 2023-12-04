@@ -4,34 +4,27 @@ import styled from 'styled-components';
 import { request } from '../../utils/request';
 import { Link, useParams } from 'react-router-dom';
 import { Button, Counter, H3, H4 } from '../../components';
-import { selectUserId } from '../../selectors';
+import { selectShoppingCart, selectUserId } from '../../selectors';
 
 const ProductPageContainer = ({ className }) => {
 	const [product, setProduct] = useState([]);
+	const [basketCounter, setBasketCounter] = useState((product.amount = 1));
 	const [isLoading, setIsLoading] = useState(false);
 	const params = useParams();
-	console.log(params.id);
-	// const shoppingCart = useSelector(selectShoppingCart);
 	const userId = useSelector(selectUserId);
-	// const [productArray] = products.filter((product) => product.id === params.id);
-	// const [countArray] = shoppingCart.filter(
-	// 	(product) => product.productId === params.id,
-	// );
-	// console.log('products', productArray, countArray);
-
-	// const product = { ...productArray, amount: countArray.amountInCart };
 
 	useEffect(() => {
 		setIsLoading(true);
-		request(`/products/${params.id}`)
-			.then((product) => {
+		Promise.all([
+			(request(`/products/${params.id}`), request('/shoppingCart', 'GET')),
+		])
+			.then(([product, shoppingCart]) => {
 				setProduct(product.data);
+				console.log(shoppingCart);
 			})
 			.finally(() => setIsLoading(false));
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
-
-	console.log(product);
 
 	return (
 		<div className={className}>
@@ -56,17 +49,25 @@ const ProductPageContainer = ({ className }) => {
 					<div className="counter-block">
 						<Counter
 							productId={product.id}
-							userId={userId}
-							amountInCart={product.amount}
-							// onProductInCartUpdate={onProductInCartUpdate}
+							basketCounter={basketCounter}
+							setBasketCounter={setBasketCounter}
 						/>
 						<Link to="/shopping-cart">
-							<Button onClick={console.log('sass')}>В корзину</Button>
+							<Button
+								onClick={() =>
+									request('/shoppingCart', 'POST', {
+										count: basketCounter,
+										productId: params.id,
+									})
+								}
+							>
+								В корзину
+							</Button>
 						</Link>
 					</div>
 					<div className="">
 						<H4>
-							<span>Сумма:</span> {product.price} руб.
+							<span>Сумма:</span> {product.price * basketCounter} руб.
 						</H4>
 					</div>
 				</div>
@@ -80,7 +81,7 @@ export const ProductPage = styled(ProductPageContainer)`
 	padding: 20px 40px;
 	display: flex;
 	flex-direction: column;
-	max-width: 1440px;
+	width: 1440px;
 
 	& .path-to-product {
 		width: 100%;

@@ -1,4 +1,6 @@
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { selectProductCategories } from '../../../../selectors';
 
 const CategoryImg = styled.div`
 	display: flex;
@@ -15,10 +17,11 @@ const CategoryTitle = styled.div`
 
 const ProductCategoriesContainer = ({
 	className,
-	productCategories,
 	sortingCategory,
 	setSortingCategory,
 }) => {
+	const productCategories = useSelector(selectProductCategories);
+
 	const onSortCategory = (event) => {
 		let newSortingByCategory = event.target
 			.closest('.category')

@@ -14,6 +14,11 @@ async function register(login, password) {
   const user = await User.create({ login, password: passwordHash });
   const token = generate({ id: user.id });
 
+  await user.populate({
+    path: "shoppingCart",
+    populate: "product",
+  });
+
   return { user, token };
 }
 

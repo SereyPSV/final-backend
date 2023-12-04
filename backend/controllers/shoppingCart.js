@@ -1,34 +1,48 @@
 const ShoppingCart = require("../models/ShoppingCart");
 const User = require("../models/User");
+const Product = require("../models/Product");
 
-// add
-async function addShoppingCart(userId, shoppingCart) {
-  const newShoppingCart = await ShoppingCart.create(shoppingCart);
-
-  await User.findByIdAndUpdate(userId, {
-    $push: { shoppingCart: newShoppingCart },
-  });
-
-  await newShoppingCart.populate("product");
-
-  return newShoppingCart;
-}
-
-// get
 function getShoppingCart(userId) {
-  return ShoppingCart.find({ user_id: userId });
+  const carts = ShoppingCart.find({ buyer: userId });
+  carts.forEach((cart) => {
+    Product.find(cart.product);
+  });
 }
 
-// delete
+//-----add or update in cart
+async function addOrUpdateShoppingCart(userId, count) {
+  const checkShoppingCart = await ShoppingCart.find({
+    buyer: userId,
+    product: count.product,
+  });
+  if (!checkShoppingCart.length) {
+    const newShoppingCart = await ShoppingCart.create(count);
+
+    await User.findByIdAndUpdate(userId, {
+      $push: { shoppingCart: newShoppingCart },
+    });
+
+    return await newShoppingCart.populate("product");
+  } else {
+    const newShoppingCart = await ShoppingCart.findByIdAndUpdate(
+      checkShoppingCart,
+      {
+        count: count.count,
+      },
+      { returnDocument: "after" }
+    );
+    return await newShoppingCart.populate("product");
+  }
+}
+
+//----- delete
 async function deleteShoppingCart(userId, shoppingCartId) {
   await ShoppingCart.deleteOne({ _id: shoppingCartId });
-  await User.findByIdAndUpdate(userId, {
-    $pull: { shoppingCart: shoppingCartId },
-  });
+  await User.findByIdAndUpdate(userId, { $pull: { shoppingCart: userId } });
 }
 
 module.exports = {
   getShoppingCart,
-  addShoppingCart,
+  addOrUpdateShoppingCart,
   deleteShoppingCart,
 };

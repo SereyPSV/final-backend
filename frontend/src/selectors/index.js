@@ -13,3 +13,4 @@ export * from './select-modal-on-confirm';
 export * from './select-modal-text';
 export * from './select-modal-width';
 export * from './select-product-categories';
+export * from './select-products';
