@@ -1,6 +1,7 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button } from '../button/button';
 import {
+	selectEditingProductModal,
 	selectModalButton,
 	selectModalIsEdit,
 	selectModalIsOpen,
@@ -9,29 +10,50 @@ import {
 	selectModalText,
 	selectModalWidth,
 } from '../../selectors';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { ProductEditModal } from './components';
+import { useState } from 'react';
+import { saveProductAsync } from '../../actions';
 
 const ModalContainer = ({ className }) => {
+	const editingProduct = useSelector(selectEditingProductModal);
+	const [newProduct, setNewProduct] = useState({ ...editingProduct });
 	const isOpen = useSelector(selectModalIsOpen);
 	const isEdit = useSelector(selectModalIsEdit);
 	const text = useSelector(selectModalText);
 	const onConfirm = useSelector(selectModalOnConfirm);
 	const onCancel = useSelector(selectModalOnCancel);
 	const buttonModal = useSelector(selectModalButton);
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	if (!isOpen) {
 		return null;
 	}
+
+	const onSave = () => {
+		isEdit &&
+			dispatch(saveProductAsync(editingProduct.id, newProduct)).then(() =>
+				navigate(`/product/${editingProduct.id}`),
+			);
+		onConfirm();
+	};
 
 	return (
 		<div className={className}>
 			<div className="overlay">
 				<div className="box">
 					<h3>{text}</h3>
-					{isEdit && <ProductEditModal />}
+					{isEdit && (
+						<ProductEditModal
+							editingProduct={editingProduct}
+							newProduct={newProduct}
+							setNewProduct={setNewProduct}
+						/>
+					)}
 					<div className="buttons">
-						<Button width="120px" onClick={onConfirm}>
+						<Button width="120px" onClick={onSave}>
 							{buttonModal.confirm}
 						</Button>
 						<Button width="120px" onClick={onCancel}>

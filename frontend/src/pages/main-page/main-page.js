@@ -7,9 +7,29 @@ import { setProductCategoriesData } from '../../actions';
 import styled from 'styled-components';
 
 const MainPageContainer = ({ className }) => {
-	const [sortingCategory, setSortingCategory] = useState('');
+	const [sortingCategory, setSortingCategory] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const dispatch = useDispatch();
+
+	function handleChange(event) {
+		setIsLoading(true);
+		let newIsChecked = sortingCategory || [];
+		if (event.target.checked === undefined) {
+			return setIsLoading(false);
+		}
+		if (event.target.checked === true) {
+			newIsChecked.push(event.target.name);
+			setSortingCategory(newIsChecked);
+			return setIsLoading(false);
+		}
+		if (event.target.checked === false) {
+			if (newIsChecked.some((i) => i === event.target.name)) {
+				newIsChecked = newIsChecked.filter((el) => el !== event.target.name);
+				setSortingCategory(newIsChecked);
+				return setIsLoading(false);
+			}
+		}
+	}
 
 	useEffect(() => {
 		setIsLoading(true);
@@ -25,6 +45,7 @@ const MainPageContainer = ({ className }) => {
 	return (
 		<div className={className}>
 			<ProductCategories
+				handleChange={handleChange}
 				sortingCategory={sortingCategory}
 				setSortingCategory={setSortingCategory}
 			/>

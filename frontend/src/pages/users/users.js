@@ -13,7 +13,6 @@ const UsersContainer = ({ className }) => {
 	const [errorMessage, setErrorMessage] = useState(null);
 	const [shouldUpdateUserList, setShouldUpdateUserList] = useState(false);
 	const userRole = useSelector(selectUserRole);
-
 	useEffect(() => {
 		Promise.all([request('/users'), request('/users/roles')]).then(
 			([usersRes, rolesRes]) => {
@@ -21,7 +20,6 @@ const UsersContainer = ({ className }) => {
 					setErrorMessage(usersRes.error || rolesRes.error);
 					return;
 				}
-
 				setUsers(usersRes.data);
 				setRoles(rolesRes.data);
 			},

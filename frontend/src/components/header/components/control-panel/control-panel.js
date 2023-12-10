@@ -27,9 +27,10 @@ const ControlPanelContainer = ({ className }) => {
 	const onLogout = () => {
 		dispatch(logout());
 		sessionStorage.removeItem('userData');
+		navigate('/');
 	};
 
-	const isAdmin = checkAccess([ROLE.ADMIN], roleId);
+	const isAdminOrSeller = checkAccess([ROLE.ADMIN, ROLE.SELLER], roleId);
 
 	return (
 		<div className={className}>
@@ -77,7 +78,7 @@ const ControlPanelContainer = ({ className }) => {
 						</>
 					)}
 				</RightAligned>
-				{isAdmin && (
+				{isAdminOrSeller && (
 					<RightAligned>
 						<Link to="/users">
 							<Button width={'150px'}>

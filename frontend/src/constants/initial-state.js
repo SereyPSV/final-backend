@@ -4,6 +4,15 @@ export const initialProductState = {
 	imageUrl: '',
 	productName: '',
 	price: null,
-	productDescription: '',
+	description: '',
 	amount: null,
 };
+
+export const initialShoppingCartState = [
+	{
+		id: null,
+		buyer: '',
+		count: 1,
+		product: '',
+	},
+];

@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectProducts, selectUserRole } from '../../../../selectors';
 import { request } from '../../../../utils/request';
 import { checkAccess } from '../../../../utils';
-import { setProductsData } from '../../../../actions';
+import { CLOSE_MODAL, openModal, setProductsData } from '../../../../actions';
 
 const ProductsContainer = ({ className, sortingCategory }) => {
 	const [page, setPage] = useState(1);
@@ -27,19 +27,39 @@ const ProductsContainer = ({ className, sortingCategory }) => {
 
 	useEffect(() => {
 		setIsLoading(true);
-		request(`/products?search=${searchPhrase}&page=${page}&limit=${PAGINATION_LIMIT}`)
+		request(
+			`/products?&search=${searchPhrase}&sort=${sortSelectionProducts}&page=${page}&limit=${PAGINATION_LIMIT}`,
+		)
 			.then(({ data: { products, lastPage } }) => {
 				dispatch(setProductsData(products));
 				setLastPage(lastPage);
 			})
 			.finally(() => setIsLoading(false));
-	}, [dispatch, page, shouldSearch, isDeleting]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [dispatch, page, shouldSearch, isDeleting, sortSelectionProducts]);
 
 	const startDelayedSearch = useMemo(() => debounce(setShouldSearch, 2000), []);
 
 	const onSearch = ({ target }) => {
 		setSearchPhrase(target.value);
 		startDelayedSearch(!shouldSearch);
+	};
+
+	const onProductAdd = () => {
+		dispatch(
+			openModal({
+				text: 'Редактирование товара',
+				button: { confirm: 'Сохранить', cancel: 'Отмена' },
+				width: '1000px',
+				isEdit: true,
+				onConfirm: () => {
+					dispatch(CLOSE_MODAL);
+				},
+				onCancel: () => {
+					dispatch(CLOSE_MODAL);
+				},
+			}),
+		);
 	};
 
 	isLoading && <Loader />; // лоадер
@@ -56,7 +76,7 @@ const ProductsContainer = ({ className, sortingCategory }) => {
 				/>
 
 				{isEditing ? (
-					<Button width={'210px'}>
+					<Button width={'210px'} onClick={onProductAdd}>
 						Добавить товар
 						<Icon
 							id="fa-pencil-square-o"

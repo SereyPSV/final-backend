@@ -1,33 +1,29 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { TableRow } from '../table-row/table-row';
 import { Button } from '../../../../../../../../components';
 import { trimDescription } from '../../../utils';
-import { useServerRequest } from '../../../../../../../../hooks';
 import {
 	CLOSE_MODAL,
 	openModal,
 	removeProductAsync,
 } from '../../../../../../../../actions';
-import { selectUserId } from '../../../../../../../../selectors';
 import styled from 'styled-components';
 
 const ProductRowContainer = ({ className, product, isDeleting, setIsDeleting }) => {
 	const { id, productName, titleGroup, price, amount, imageUrl } = product;
 	const dispatch = useDispatch();
-	const requestServer = useServerRequest();
 	const navigate = useNavigate();
-	const userId = useSelector(selectUserId);
 
-	const onProductEdit = (productId) => {
+	const onProductEdit = () => {
 		dispatch(
 			openModal({
-				text: 'Редактировать товар?',
-				button: { confirm: 'Возможно', cancel: 'НННЕТ' },
+				text: 'Редактирование товара',
+				button: { confirm: 'Сохранить', cancel: 'Отмена' },
 				width: '1000px',
 				isEdit: true,
+				product: product,
 				onConfirm: () => {
-					dispatch(removeProductAsync(productId)).then(() => navigate('/'));
 					dispatch(CLOSE_MODAL);
 				},
 				onCancel: () => {
@@ -39,13 +35,13 @@ const ProductRowContainer = ({ className, product, isDeleting, setIsDeleting }) 
 	const onProductRemove = (productId) => {
 		dispatch(
 			openModal({
-				text: `Удалить товар?${productId}`,
+				text: `Удалить товар из базы данных товаров?`,
 				width: '500px',
 				isEdit: false,
 				onConfirm: () => {
 					dispatch(removeProductAsync(productId)).then(() => {
+						navigate('/');
 						setIsDeleting(!isDeleting);
-						navigate('/products/edit');
 					});
 
 					dispatch(CLOSE_MODAL);
@@ -60,7 +56,7 @@ const ProductRowContainer = ({ className, product, isDeleting, setIsDeleting }) 
 	return (
 		<div className={className}>
 			<TableRow border={true}>
-				<div className="name-column">{trimDescription(productName, 30)}</div>
+				<div className="name-column">{trimDescription(productName, 200)}</div>
 				<div className="category-column">{titleGroup}</div>
 				<div className="price-column">{price.toFixed(2)} руб</div>
 				<div className="amount-column">{amount} </div>

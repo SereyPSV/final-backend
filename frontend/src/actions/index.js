@@ -11,7 +11,6 @@ export * from './reset-products-data';
 export * from './save-product-async';
 export * from './set-product-categories-data';
 export * from './set-product-data';
-export * from './set-product-in-cart-async';
 export * from './set-products-data';
 export * from './set-shopping-cart-data';
 export * from './set-user';

@@ -1,38 +1,21 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { Button, Counter, H2, H3, Icon } from '../../../../components';
+import { useDispatch } from 'react-redux';
+import { Counter, H3, Icon } from '../../../../components';
 import { Link } from 'react-router-dom';
 import { CLOSE_MODAL, openModal, removeProductFromCartAsync } from '../../../../actions';
 import { styled } from 'styled-components';
-import { selectProducts, selectShoppingCart } from '../../../../selectors';
+import { useState } from 'react';
 
-const CartContainer = ({ className }) => {
+const CartContainer = ({ className, cart }) => {
+	const { id, imageUrl, productName, price, cartId, count } = cart;
+	const [basketCounter, setBasketCounter] = useState(count);
 	const dispatch = useDispatch();
-	const shoppingCart = useSelector(selectShoppingCart);
-	const products = useSelector(selectProducts);
-	console.log(products);
 
-	let totalCostOrder = 0;
-	let shoppingCartWithImg = [];
-
-	products.forEach((product) => {
-		shoppingCart.forEach((cart) => {
-			if (cart.productId === product.id) {
-				shoppingCartWithImg.push({
-					...product,
-					amountInCart: cart.amountInCart,
-					idInCart: cart.id,
-				});
-				totalCostOrder += Number(product.price) * cart.amountInCart;
-			}
-		});
-	});
-
-	const onProductFromCartRemove = (idInCart, id) => {
+	const onProductFromCartRemove = (cartId) => {
 		dispatch(
 			openModal({
 				text: 'Удалить товар из корзины?',
 				onConfirm: () => {
-					// dispatch(removeProductFromCartAsync(userId, idInCart, id));
+					dispatch(removeProductFromCartAsync(cartId));
 					dispatch(CLOSE_MODAL);
 				},
 				onCancel: () => {
@@ -44,55 +27,46 @@ const CartContainer = ({ className }) => {
 
 	return (
 		<div className={className}>
-			{shoppingCartWithImg.map(
-				({ id, imageUrl, productName, price, amountInCart, idInCart }) => {
-					return (
-						<div className="product" key={id}>
-							<Link to={`/product/${id}`}>
-								<div className="product-title">
-									<div className="product-image">
-										<img src={imageUrl} alt={productName} />
-									</div>
-									<H3>{productName}</H3>
-								</div>
-							</Link>
-							<div className="products-order">
-								<div className="cost-per-piece">{price} руб/шт</div>
+			<Link to={`/product/${id}`}>
+				<div className="product-title">
+					<div className="product-image">
+						<img src={imageUrl} alt={productName} />
+					</div>
+					<H3>{productName}</H3>
+				</div>
+			</Link>
+			<div className="products-order">
+				<div className="cost-per-piece">{price} руб/шт</div>
 
-								<Counter />
+				<Counter
+					basketCounter={basketCounter}
+					setBasketCounter={setBasketCounter}
+				/>
 
-								<div className="total-cost-product">
-									{amountInCart * Number(price)} руб
-								</div>
-								<Icon
-									size={'24px'}
-									margin={'0 10px 0 10px'}
-									id="fa-trash-o"
-									color={'#999999'}
-									onClick={() => onProductFromCartRemove(idInCart, id)}
-								/>
-							</div>
-						</div>
-					);
-				},
-			)}
+				<div className="total-cost-product">{price * basketCounter} руб</div>
+				<Icon
+					size={'24px'}
+					margin={'0 10px 0 10px'}
+					id="fa-trash-o"
+					color={'#999999'}
+					onClick={() => onProductFromCartRemove(cartId)}
+				/>
+			</div>
 		</div>
 	);
 };
 export const Cart = styled(CartContainer)`
-	padding: 20px 40px;
-	display: flex;
-	flex-direction: column;
-	width: 1440px;
-	height: 760px;
-	overflow: auto;
+	// padding: 20px 40px;
+	// display: flex;
+	// flex-direction: column;
+	// width: 100%;
+	// max-height: 760px;
+	// overflow: auto;
 
-	& .product {
-		height: 120px;
-		display: flex;
-		justify-content: space-between;
-		border: 1px solid #ededed;
-	}
+	height: 120px;
+	display: flex;
+	justify-content: space-between;
+	border: 1px solid #ededed;
 
 	& .product-title {
 		display: flex;
@@ -109,7 +83,7 @@ export const Cart = styled(CartContainer)`
 		width: 80px;
 	}
 
-	& H2 {
+	& h2 {
 		padding: 20px 0 40px 0;
 	}
 
@@ -139,26 +113,5 @@ export const Cart = styled(CartContainer)`
 		display: flex;
 		justify-content: flex-end;
 		padding: 40px 0;
-	}
-	& .total-cost-order-wrapper {
-		display: flex;
-		flex-direction: column;
-		width: 600px;
-		padding: 24px;
-		border: 1px solid #ededed;
-	}
-	& .total-cost-order-position {
-		display: flex;
-		justify-content: space-between;
-		align-items: flex-end;
-		padding: 0 0 24px;
-	}
-	& .title-total {
-		font-size: 20px;
-		font-weight: 400;
-	}
-	& .title-cost-order {
-		font-size: 36px;
-		font-weight: 500;
 	}
 `;

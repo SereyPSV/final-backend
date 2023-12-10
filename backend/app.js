@@ -8,7 +8,6 @@ const {
   getRoles,
   updateUser,
   deleteUser,
-  getUser,
 } = require("./controllers/user");
 const {
   addProduct,
@@ -74,37 +73,48 @@ app.get("/products", async (req, res) => {
   const { products, lastPage } = await getProducts(
     req.query.search,
     req.query.limit,
-    req.query.page
+    req.query.page,
+    req.query.sort
   );
-
   res.send({ data: { lastPage, products: products.map(mapProduct) } });
 });
 
 app.get("/products/:id", async (req, res) => {
-  const product = await getProduct(req.params.id);
-
-  res.send({ data: mapProduct(product) });
+  try {
+    const product = await getProduct(req.params.id);
+    res.send({ error: null, data: mapProduct(product) });
+  } catch {
+    res.send({ error: e.message || "Product not found" });
+  }
 });
 
 //------------------------------------------------
 app.use(authenticated);
 //------------------------------------------------
 //---------ShoppingCart get fo user
-app.get("/shoppingCart", async (req, res) => {
-  const newShoppingCart = await getShoppingCart(req.user.id);
+app.get(
+  "/shoppingCart",
+  hasRole([ROLES.ADMIN, ROLES.SELLER, ROLES.BUYER]),
+  async (req, res) => {
+    const newShoppingCart = await getShoppingCart(req.user.id);
 
-  res.send({ data: newShoppingCart });
-});
+    res.send({ data: newShoppingCart });
+  }
+);
 //---------ShoppingCart add or edit
-app.post("/shoppingCart", async (req, res) => {
-  const newShoppingCart = await addOrUpdateShoppingCart(req.user.id, {
-    buyer: req.user.id,
-    count: req.body.count,
-    product: req.body.productId,
-  });
+app.post(
+  "/shoppingCart",
+  hasRole([ROLES.ADMIN, ROLES.SELLER, ROLES.BUYER]),
+  async (req, res) => {
+    const newShoppingCart = await addOrUpdateShoppingCart(req.user.id, {
+      buyer: req.user.id,
+      count: req.body.count,
+      product: req.body.productId,
+    });
 
-  res.send({ data: newShoppingCart });
-});
+    res.send({ data: newShoppingCart });
+  }
+);
 //---------ShoppingCart delete
 app.delete(
   "/shoppingCart/:shoppingCartId",
@@ -144,7 +154,7 @@ app.patch(
       product_name: req.body.productName,
       group: req.body.group,
       image_url: req.body.imageUrl,
-      product_description: req.body.productDescription,
+      product_description: req.body.description,
       price: req.body.price,
       amount: req.body.amount,
     });
@@ -157,8 +167,7 @@ app.delete(
   "/products/:id",
   hasRole([ROLES.ADMIN, ROLES.SELLER]),
   async (req, res) => {
-    console.log(req.params.id);
-    await deleteProduct(req.params.id);
+    await deleteProduct(req.params.id); // найти все корзины с продуктом, взять из них пользователей, у пользователей удалить корзину и удалить саму корзину
 
     res.send({ error: null });
   }
@@ -170,18 +179,19 @@ app.get("/users", hasRole([ROLES.ADMIN]), async (req, res) => {
   res.send({ data: users.map(mapUser) });
 });
 
-app.get("/users/:id", async (req, res) => {
-  console.log(req.user.id, "user", req.params.id);
-  const product = await getUser(req.user.id);
-
-  res.send({ data: product });
-});
 //----Получение ролей----//
 app.get("/users/roles", hasRole([ROLES.ADMIN]), async (req, res) => {
   const roles = getRoles();
 
   res.send({ data: roles });
 });
+
+// app.get("/users/:id", async (req, res) => {
+//   const product = await getUser(req.user.id);
+
+//   res.send({ data: product });
+// });
+
 //----Редактирование роли пользователей----//
 app.patch("/users/:id", hasRole([ROLES.ADMIN]), async (req, res) => {
   const newUser = await updateUser(req.params.id, {

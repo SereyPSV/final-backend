@@ -1,1 +1,1 @@
-export const selectShoppingCart = ({ user }) => user;
+export const selectShoppingCart = ({ shoppingCart }) => shoppingCart;

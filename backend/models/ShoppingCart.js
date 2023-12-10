@@ -18,6 +18,6 @@ const ShoppingCartSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-const ShoppingCart = mongoose.model("Shopping_Cart", ShoppingCartSchema);
+const ShoppingCart = mongoose.model("ShoppingCart", ShoppingCartSchema);
 
 module.exports = ShoppingCart;

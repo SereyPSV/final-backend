@@ -1,17 +1,38 @@
-import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { selectProductCategories } from '../../../../selectors';
 import { Input, Selector } from '../../../../components';
 import { SELECTOR_PRODUCT_CATEGORIES } from '../../../../constants';
 import styled from 'styled-components';
+import { useLayoutEffect, useState } from 'react';
 
-const ProductEditModalContainer = ({ className }) => {
-	const [productNameValue, setProductNameValue] = useState('');
-	const [selectedCategory, setSelectedCategory] = useState('');
-	const [descriptionValue, setDescriptionValue] = useState('');
-	const [priceValue, setPriceValue] = useState('');
-	const [amountValue, setAmountValue] = useState('');
-	const [imageUrlValue, setImageUrlValue] = useState('');
+const ProductEditModalContainer = ({ className, editingProduct, setNewProduct }) => {
+	const { productName, group, price, description, amount, imageUrl } = editingProduct;
+
+	const [productNameValue, setProductNameValue] = useState(productName);
+	const [groupValue, setGroupValue] = useState(group);
+	const [priceValue, setPriceValue] = useState(price);
+	const [descriptionValue, setDescriptionValue] = useState(description);
+	const [amountValue, setAmountValue] = useState(amount);
+	const [imageUrlValue, setImageUrlValue] = useState(imageUrl);
+
+	useLayoutEffect(() => {
+		setNewProduct({
+			productName: productNameValue,
+			group: groupValue,
+			price: priceValue,
+			description: descriptionValue,
+			amount: amountValue,
+			imageUrl: imageUrlValue,
+		});
+	}, [
+		productNameValue,
+		groupValue,
+		priceValue,
+		descriptionValue,
+		amountValue,
+		imageUrlValue,
+		setNewProduct,
+	]);
 
 	const productCategories = [
 		...SELECTOR_PRODUCT_CATEGORIES,
@@ -21,8 +42,8 @@ const ProductEditModalContainer = ({ className }) => {
 		})),
 	];
 	const onProductNameChange = ({ target }) => setProductNameValue(target.value);
-
 	const onPriceChange = ({ target }) => setPriceValue(target.value);
+	const onDescriptionChange = ({ target }) => setDescriptionValue(target.value);
 	const onAmountChange = ({ target }) => setAmountValue(target.value);
 	const onImageChange = ({ target }) => setImageUrlValue(target.value);
 
@@ -41,8 +62,8 @@ const ProductEditModalContainer = ({ className }) => {
 				<Selector
 					width={'100%'}
 					selectorBy={productCategories}
-					selected={selectedCategory}
-					setSelected={setSelectedCategory}
+					selected={groupValue}
+					setSelected={setGroupValue}
 				/>
 			</div>
 			<div className="product-description">
@@ -50,7 +71,7 @@ const ProductEditModalContainer = ({ className }) => {
 				<Input
 					value={descriptionValue}
 					placeholder="Описание товара..."
-					onChange={setDescriptionValue}
+					onChange={onDescriptionChange}
 				/>
 			</div>
 			<div className="product-price">

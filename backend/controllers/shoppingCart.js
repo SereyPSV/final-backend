@@ -3,10 +3,10 @@ const User = require("../models/User");
 const Product = require("../models/Product");
 
 function getShoppingCart(userId) {
-  const carts = ShoppingCart.find({ buyer: userId });
-  carts.forEach((cart) => {
-    Product.find(cart.product);
-  });
+  return (carts = ShoppingCart.find({ buyer: userId }));
+  // carts.forEach((cart) => {
+  //   Product.find(cart.product);
+  // });
 }
 
 //-----add or update in cart
@@ -38,7 +38,9 @@ async function addOrUpdateShoppingCart(userId, count) {
 //----- delete
 async function deleteShoppingCart(userId, shoppingCartId) {
   await ShoppingCart.deleteOne({ _id: shoppingCartId });
-  await User.findByIdAndUpdate(userId, { $pull: { shoppingCart: userId } });
+  await User.findByIdAndUpdate(userId, {
+    $pull: { shoppingCart: shoppingCartId },
+  });
 }
 
 module.exports = {

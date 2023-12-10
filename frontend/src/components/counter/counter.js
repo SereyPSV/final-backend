@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Icon } from '../../components';
 import { styled } from 'styled-components';
 
@@ -12,7 +11,9 @@ const CounterContainer = ({ className, basketCounter, setBasketCounter }) => {
 						margin={'0 10px 0 10px'}
 						id="fa-minus"
 						onClick={() => {
-							setBasketCounter(basketCounter - 1);
+							basketCounter < 1
+								? (basketCounter = 1)
+								: setBasketCounter(basketCounter - 1);
 						}}
 					/>
 				</div>
