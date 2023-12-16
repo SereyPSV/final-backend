@@ -3,54 +3,33 @@ import { useDispatch } from 'react-redux';
 import { ProductCategories, Products } from './components';
 import { Loader } from '../../components';
 import { request } from '../../utils/request';
-import { setProductCategoriesData } from '../../actions';
+import { setProductCategories } from '../../actions';
 import styled from 'styled-components';
 
 const MainPageContainer = ({ className }) => {
-	const [sortingCategory, setSortingCategory] = useState([]);
+	const [searchGroup, setSearchGroup] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const dispatch = useDispatch();
-
-	function handleChange(event) {
-		setIsLoading(true);
-		let newIsChecked = sortingCategory || [];
-		if (event.target.checked === undefined) {
-			return setIsLoading(false);
-		}
-		if (event.target.checked === true) {
-			newIsChecked.push(event.target.name);
-			setSortingCategory(newIsChecked);
-			return setIsLoading(false);
-		}
-		if (event.target.checked === false) {
-			if (newIsChecked.some((i) => i === event.target.name)) {
-				newIsChecked = newIsChecked.filter((el) => el !== event.target.name);
-				setSortingCategory(newIsChecked);
-				return setIsLoading(false);
-			}
-		}
-	}
 
 	useEffect(() => {
 		setIsLoading(true);
 		request('/categories')
 			.then((productCategories) => {
-				dispatch(setProductCategoriesData(productCategories.categories));
+				dispatch(setProductCategories(productCategories.categories));
 			})
 			.finally(() => setIsLoading(false));
 	}, [dispatch]);
 
-	isLoading && <Loader />; // лоадер
-
 	return (
-		<div className={className}>
-			<ProductCategories
-				handleChange={handleChange}
-				sortingCategory={sortingCategory}
-				setSortingCategory={setSortingCategory}
-			/>
-			<Products sortingCategory={sortingCategory} />
-		</div>
+		<Loader isLoading={isLoading}>
+			<div className={className}>
+				<ProductCategories
+					searchGroup={searchGroup}
+					setSearchGroup={setSearchGroup}
+				/>
+				<Products searchGroup={searchGroup} setIsLoading={setIsLoading} />
+			</div>
+		</Loader>
 	);
 };
 

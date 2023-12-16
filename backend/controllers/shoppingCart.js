@@ -4,9 +4,6 @@ const Product = require("../models/Product");
 
 function getShoppingCart(userId) {
   return (carts = ShoppingCart.find({ buyer: userId }));
-  // carts.forEach((cart) => {
-  //   Product.find(cart.product);
-  // });
 }
 
 //-----add or update in cart

@@ -1,26 +1,20 @@
-import { useState } from 'react';
 import styled from 'styled-components';
 
-const CategoryContainer = ({
-	id,
-	className,
-	category,
-	sortingCategory,
-	setSortingCategory,
-	handleChange,
-}) => {
+const CategoryContainer = ({ id, className, category, searchGroup, setSearchGroup }) => {
 	const { group, title, imageUrl } = category;
-	const [isChecked, setIsChecked] = useState(false);
 
 	const handleChangeCat = (event) => {
-		handleChange(event);
-		setIsChecked(!isChecked);
+		if (event.target.checked) {
+			setSearchGroup([...searchGroup, group]);
+		} else {
+			setSearchGroup(searchGroup.filter((item) => item !== group));
+		}
 	};
 
 	return (
-		<label id={id} className={className} onClick={handleChangeCat}>
-			<input type="checkbox" name={group} />
-			<div htmlFor={group} className="categoryImg">
+		<label id={id} className={className} onClick={handleChangeCat} name={group}>
+			<input type="checkbox" name={group} onChange={handleChangeCat} />
+			<div className="categoryImg">
 				<img src={imageUrl} width={'100px'} height={'80px'} alt={`${title}`} />
 			</div>
 			<div className="categoryTitle">{title}</div>

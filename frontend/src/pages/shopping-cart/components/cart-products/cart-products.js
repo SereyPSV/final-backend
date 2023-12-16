@@ -1,21 +1,28 @@
 import { useDispatch } from 'react-redux';
 import { Counter, H3, Icon } from '../../../../components';
 import { Link } from 'react-router-dom';
-import { CLOSE_MODAL, openModal, removeProductFromCartAsync } from '../../../../actions';
+import { CLOSE_MODAL, openModal, setShoppingCart } from '../../../../actions';
 import { styled } from 'styled-components';
 import { useState } from 'react';
+import { request } from '../../../../utils/request';
 
-const CartContainer = ({ className, cart }) => {
-	const { id, imageUrl, productName, price, cartId, count } = cart;
+const CartContainer = ({ className, cart, shoppingCart }) => {
+	const { _id, count, imageUrl, price, product, productName } = cart;
 	const [basketCounter, setBasketCounter] = useState(count);
 	const dispatch = useDispatch();
 
-	const onProductFromCartRemove = (cartId) => {
+	const onProductFromCartRemove = () => {
 		dispatch(
 			openModal({
 				text: 'Удалить товар из корзины?',
 				onConfirm: () => {
-					dispatch(removeProductFromCartAsync(cartId));
+					request(`/shoppingCart/${_id}`, 'DELETE');
+					dispatch(
+						setShoppingCart(
+							shoppingCart.filter((cartToDel) => cartToDel._id !== _id),
+						),
+					);
+
 					dispatch(CLOSE_MODAL);
 				},
 				onCancel: () => {
@@ -27,7 +34,7 @@ const CartContainer = ({ className, cart }) => {
 
 	return (
 		<div className={className}>
-			<Link to={`/product/${id}`}>
+			<Link to={`/product/${product}`}>
 				<div className="product-title">
 					<div className="product-image">
 						<img src={imageUrl} alt={productName} />
@@ -49,7 +56,7 @@ const CartContainer = ({ className, cart }) => {
 					margin={'0 10px 0 10px'}
 					id="fa-trash-o"
 					color={'#999999'}
-					onClick={() => onProductFromCartRemove(cartId)}
+					onClick={onProductFromCartRemove}
 				/>
 			</div>
 		</div>

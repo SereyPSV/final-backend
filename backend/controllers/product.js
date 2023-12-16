@@ -1,4 +1,5 @@
 const Product = require("../models/Product");
+const GROUPS = require("../constants/groups");
 
 // add
 async function addProduct(product) {
@@ -16,12 +17,19 @@ async function editProduct(id, product) {
 }
 
 // delete
-function deleteProduct(id) {
+async function deleteProduct(id) {
   return Product.deleteOne({ _id: id });
 }
 
 // get list with search and pagination
-async function getProducts(search = "", limit = 6, page = 1, sort = "") {
+async function getProducts(
+  searchPhrase = "",
+  searchGroup = GROUPS,
+  limit = 6,
+  page = 1,
+  sort = ""
+) {
+  const sortGroup = !searchGroup.length ? GROUPS : searchGroup.split(",");
   let sortParam = {};
   switch (sort) {
     case "priceIncrease":
@@ -41,15 +49,15 @@ async function getProducts(search = "", limit = 6, page = 1, sort = "") {
   }
   const [products, count] = await Promise.all([
     Product.find({
-      group: ["1001", "1002", "1003", "1004", "1005", "1006", "1007", "1008"],
-      product_name: { $regex: search, $options: "i" },
+      group: sortGroup,
+      product_name: { $regex: searchPhrase, $options: "i" },
     })
       .sort(sortParam)
       .limit(limit)
       .skip((page - 1) * limit),
     Product.countDocuments({
-      group: ["1001", "1002", "1003", "1004", "1005", "1006", "1007", "1008"],
-      product_name: { $regex: search, $options: "i" },
+      group: searchGroup.split(","),
+      product_name: { $regex: searchPhrase, $options: "i" },
     }),
   ]);
 

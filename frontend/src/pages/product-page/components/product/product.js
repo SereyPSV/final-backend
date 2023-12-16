@@ -1,16 +1,61 @@
 import styled from 'styled-components';
 import { Button, Counter, H3, H4 } from '../../../../components';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectUserId } from '../../../../selectors';
-import { saveShoppingCartAsync } from '../../../../actions/save-product-to-cart-async';
+import { selectProduct, selectShoppingCart, selectUserId } from '../../../../selectors';
+import { request } from '../../../../utils/request';
+import { setShoppingCart } from '../../../../actions';
 
-const ProductContainer = ({ className, product, productId }) => {
-	const { imageUrl, productName, description, amount, price, count } = product;
+const ProductContainer = ({ className }) => {
+	const {
+		imageUrl,
+		productName,
+		description,
+		amount,
+		price,
+		count = 1,
+		id,
+	} = useSelector(selectProduct);
 	const [basketCounter, setBasketCounter] = useState(count);
+	const shoppingCart = useSelector(selectShoppingCart);
 	const userId = useSelector(selectUserId);
 	const dispatch = useDispatch();
+
+	useLayoutEffect(() => {
+		setBasketCounter(count);
+	}, [count]);
+
+	const addInShoppingCart = () => {
+		console.log(shoppingCart);
+		request(`/shoppingCart`, 'POST', {
+			count: basketCounter,
+			productId: id,
+		}).then((newCart) => {
+			if (shoppingCart.length === 0) {
+				console.log('корзина пустая', newCart.data);
+				dispatch(setShoppingCart(newCart.data));
+			}
+			// if (
+			// 	shoppingCart.length === 0 ||
+			// 	shoppingCart.filter((cart) => cart.product === id).length === 0
+			// ) {
+			// 	console.log('add', newCart.data);
+			// 	dispatch(setShoppingCart([...shoppingCart, newCart.data]));
+			// } else {
+			// 	console.log('edit');
+			// 	dispatch(
+			// 		setShoppingCart(
+			// 			shoppingCart.map((cart) =>
+			// 				cart.product === id
+			// 					? { ...cart, count: basketCounter }
+			// 					: { ...cart },
+			// 			),
+			// 		),
+			// 	);
+			// }
+		});
+	};
 
 	return (
 		<div className={className}>
@@ -34,17 +79,7 @@ const ProductContainer = ({ className, product, productId }) => {
 								setBasketCounter={setBasketCounter}
 							/>
 							<Link to={`/shopping-cart/${userId}`}>
-								<Button
-									width={'170px'}
-									onClick={() => {
-										dispatch(
-											saveShoppingCartAsync({
-												count: basketCounter,
-												productId: productId,
-											}),
-										);
-									}}
-								>
+								<Button width={'170px'} onClick={addInShoppingCart}>
 									В корзину
 								</Button>
 							</Link>

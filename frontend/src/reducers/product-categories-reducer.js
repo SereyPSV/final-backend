@@ -7,7 +7,7 @@ export const productCategoriesReducer = (
 	action,
 ) => {
 	switch (action.type) {
-		case ACTION_TYPE.SET_PRODUCT_CATEGORIES_DATA:
+		case ACTION_TYPE.SET_PRODUCT_CATEGORIES:
 			return action.payload;
 		default:
 			return state;

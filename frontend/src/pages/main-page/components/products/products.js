@@ -1,48 +1,56 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Pagination, ProductsList, ProductsEdit, Search } from './components';
-import { Button, Icon, Loader, Selector } from '../../../../components';
-import { PAGINATION_LIMIT, ROLE, SORT_BY_PRICE_OR_NAME } from '../../../../constants';
+import { Button, Icon, Selector } from '../../../../components';
+import { GROUPS, ROLE, SORT_BY_PRICE_OR_NAME } from '../../../../constants';
 import { debounce } from './components/utils';
 import { Link, useMatch } from 'react-router-dom';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectProducts, selectUserRole } from '../../../../selectors';
-import { request } from '../../../../utils/request';
 import { checkAccess } from '../../../../utils';
-import { CLOSE_MODAL, openModal, setProductsData } from '../../../../actions';
+import { CLOSE_MODAL, loadProductsAsync, openModal } from '../../../../actions';
 
-const ProductsContainer = ({ className, sortingCategory }) => {
+const ProductsContainer = ({ className, searchGroup, setIsLoading }) => {
 	const [page, setPage] = useState(1);
+	const [isDeleting, setIsDeleting] = useState(false);
 	const [lastPage, setLastPage] = useState(1);
 	const [searchPhrase, setSearchPhrase] = useState('');
 	const [shouldSearch, setShouldSearch] = useState(false);
 	const [sortSelectionProducts, setSortSelectionProducts] = useState('');
-	const [isLoading, setIsLoading] = useState(false);
-	const [isDeleting, setIsDeleting] = useState(false);
-	const isEditing = useMatch('/products/edit');
 	const roleId = useSelector(selectUserRole);
-	const isAllowed = checkAccess([ROLE.ADMIN, ROLE.SELLER], roleId);
-	const dispatch = useDispatch();
 	const products = useSelector(selectProducts);
+	const isEditing = useMatch('/products/edit');
+	const dispatch = useDispatch();
+	const isAllowed = checkAccess([ROLE.ADMIN, ROLE.SELLER], roleId);
+
+	let searchGroupUrl;
+	if (searchGroup.length === 0) {
+		searchGroupUrl = GROUPS;
+	} else {
+		searchGroupUrl = searchGroup;
+	}
 
 	useEffect(() => {
-		setIsLoading(true);
-		request(
-			`/products?&search=${searchPhrase}&sort=${sortSelectionProducts}&page=${page}&limit=${PAGINATION_LIMIT}`,
-		)
-			.then(({ data: { products, lastPage } }) => {
-				dispatch(setProductsData(products));
-				setLastPage(lastPage);
-			})
-			.finally(() => setIsLoading(false));
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [dispatch, page, shouldSearch, isDeleting, sortSelectionProducts]);
+		dispatch(
+			loadProductsAsync(searchPhrase, searchGroupUrl, sortSelectionProducts, page),
+		).then(({ lastPage }) => setLastPage(lastPage));
 
-	const startDelayedSearch = useMemo(() => debounce(setShouldSearch, 2000), []);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [
+		dispatch,
+		page,
+		shouldSearch,
+		isDeleting,
+		sortSelectionProducts,
+		lastPage,
+		searchGroupUrl,
+	]);
+
+	const delay = useMemo(() => debounce(setShouldSearch, 1500), []);
 
 	const onSearch = ({ target }) => {
 		setSearchPhrase(target.value);
-		startDelayedSearch(!shouldSearch);
+		delay(!shouldSearch);
 	};
 
 	const onProductAdd = () => {
@@ -62,8 +70,6 @@ const ProductsContainer = ({ className, sortingCategory }) => {
 		);
 	};
 
-	isLoading && <Loader />; // лоадер
-
 	return (
 		<div className={className}>
 			<div className="searchAndSort">
@@ -74,7 +80,6 @@ const ProductsContainer = ({ className, sortingCategory }) => {
 					setSelected={setSortSelectionProducts}
 					width={'200px'}
 				/>
-
 				{isEditing ? (
 					<Button width={'210px'} onClick={onProductAdd}>
 						Добавить товар
@@ -104,10 +109,16 @@ const ProductsContainer = ({ className, sortingCategory }) => {
 			{products.length > 0 ? (
 				<div className="products">
 					{isEditing ? (
-						<ProductsEdit
-							isDeleting={isDeleting}
-							setIsDeleting={setIsDeleting}
-						/>
+						<div>
+							{isAllowed ? (
+								<ProductsEdit
+									isDeleting={isDeleting}
+									setIsDeleting={setIsDeleting}
+								/>
+							) : (
+								<div>Доступ закрыт</div>
+							)}
+						</div>
 					) : (
 						<ProductsList />
 					)}

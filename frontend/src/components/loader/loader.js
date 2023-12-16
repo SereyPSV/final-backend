@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-const LoaderContainer = ({ className }) => {
-	return (
+const LoaderContainer = ({ className, isLoading, children }) => {
+	return isLoading ? (
 		<div className={className}>
 			<div className="loadingio-spinner-spin-u3g2p6jqc2">
 				<div className="ldio-zj73ah1ogw">
@@ -38,6 +38,8 @@ const LoaderContainer = ({ className }) => {
 				</div>
 			</div>
 		</div>
+	) : (
+		children
 	);
 };
 

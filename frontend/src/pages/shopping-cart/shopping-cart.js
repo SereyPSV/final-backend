@@ -1,53 +1,46 @@
-import { styled } from 'styled-components';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectProducts, selectShoppingCart } from '../../selectors';
-import { setProductsData, setShoppingCartData } from '../../actions';
-import { request } from '../../utils/request';
-import { Button, H2, Loader } from '../../components';
-import { Cart } from './components';
 import { useMatch } from 'react-router-dom';
-import { RESET_SHOPPING_CART_DATA } from '../../actions/reset-shopping-cart-data';
+import { RESET_SHOPPING_CART, setShoppingCart } from '../../actions';
+import { request } from '../../utils/request';
+import { Button, H2, Loader, PrivateContent } from '../../components';
+import { Cart } from './components';
+import { styled } from 'styled-components';
+import { GROUPS, ROLE } from '../../constants';
+import { selectShoppingCart } from '../../selectors';
 
 const ShoppingCartContainer = ({ className }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const dispatch = useDispatch();
-	const products = useSelector(selectProducts);
 	const shoppingCart = useSelector(selectShoppingCart);
 	const isCreating = !!useMatch('/shopping-cart/:userId');
 
 	useLayoutEffect(() => {
-		dispatch(RESET_SHOPPING_CART_DATA);
+		dispatch(RESET_SHOPPING_CART);
 	}, [dispatch, isCreating]);
-	console.log(shoppingCart);
-	let newShoppingCart = [],
-		totalCostOrder = 0;
-	shoppingCart.forEach((cart) => {
-		products.forEach((product) => {
-			if (product.id === cart.product) {
-				newShoppingCart.push({
-					...product,
-					count: cart.count,
-					cartId: cart._id,
-				});
-			}
-		});
-	});
-
-	totalCostOrder = newShoppingCart.reduce(
-		(acc, item, i) => acc + item.count * item.price,
-		0,
-	);
 
 	useEffect(() => {
 		setIsLoading(true);
 		Promise.all([
 			request(`/shoppingCart`),
-			request('/products?&search=&sort=&page=&limit='),
+			request(`/products?&searchPhrase=&searchGroup=${GROUPS}&sort=$&page=&limit=`),
 		])
-			.then(([shoppingCart, products]) => {
-				dispatch(setShoppingCartData(shoppingCart.data));
-				dispatch(setProductsData(products.data.products));
+			.then(([{ data: shoppingCart }, { data: products }]) => {
+				const newShoppingCart = [];
+				shoppingCart.forEach((cart) => {
+					products.products.forEach((product) => {
+						if (product.id === cart.product) {
+							newShoppingCart.push({
+								...cart,
+								imageUrl: product.imageUrl,
+								productName: product.productName,
+								price: product.price,
+							});
+						}
+					});
+				});
+				console.log(newShoppingCart);
+				dispatch(setShoppingCart(newShoppingCart));
 			})
 			.finally(() => setIsLoading(false));
 	}, [dispatch]);
@@ -55,24 +48,49 @@ const ShoppingCartContainer = ({ className }) => {
 	isLoading && <Loader />; // лоадер
 
 	return (
-		<div className={className}>
-			<H2>Корзина</H2>
-			<div className="shopping-cart-list">
-				{newShoppingCart.map((cart) => (
-					<Cart key={cart.id} cart={cart} />
-				))}
-			</div>
-
-			<div className="total-cost-order">
-				<div className="total-cost-order-wrapper">
-					<div className="total-cost-order-position">
-						<div className="title-total">Итого:</div>
-						<div className="title-cost-order">{totalCostOrder} руб</div>
-					</div>
-					<Button width={'100%'}>Оформить заказ</Button>
+		<Loader isLoading={isLoading}>
+			<PrivateContent
+				access={[ROLE.ADMIN, ROLE.SELLER, ROLE.BUYER]}
+				className="private-content"
+			>
+				<div className={className}>
+					{!shoppingCart.length ? (
+						<H2>Корзина пуста</H2>
+					) : (
+						<div>
+							<H2>Корзина</H2>
+							<div className="shopping-cart-list">
+								{shoppingCart.map((cart) => {
+									return (
+										<Cart
+											key={cart._id}
+											cart={cart}
+											shoppingCart={shoppingCart}
+										/>
+									);
+								})}
+							</div>
+							<div className="total-cost-order">
+								<div className="total-cost-order-wrapper">
+									<div className="total-cost-order-position">
+										<div className="title-total">Итого:</div>
+										<div className="title-cost-order">
+											{shoppingCart.reduce(
+												(acc, item, i) =>
+													acc + item.count * item.price,
+												0,
+											)}{' '}
+											руб
+										</div>
+									</div>
+									<Button width={'100%'}>Оформить заказ</Button>
+								</div>
+							</div>
+						</div>
+					)}
 				</div>
-			</div>
-		</div>
+			</PrivateContent>
+		</Loader>
 	);
 };
 
@@ -81,6 +99,7 @@ export const ShoppingCart = styled(ShoppingCartContainer)`
 	padding: 20px 40px;
 	display: flex;
 	flex-direction: column;
+	text-align: center;
 	width: 1370px;
 
 	& h2 {
@@ -123,5 +142,9 @@ export const ShoppingCart = styled(ShoppingCartContainer)`
 
 	& button {
 		font-size: 20px;
+	}
+
+	.error {
+		width: 1440px;
 	}
 `;

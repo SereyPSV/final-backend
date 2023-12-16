@@ -4,38 +4,29 @@ import styled from 'styled-components';
 import { request } from '../../utils/request';
 import { useMatch, useNavigate, useParams } from 'react-router-dom';
 import { Button, Loader } from '../../components';
-import {
-	selectProduct,
-	selectProductCategories,
-	selectShoppingCart,
-	selectUserRole,
-} from '../../selectors';
+import { selectProduct, selectUserRole } from '../../selectors';
 import {
 	CLOSE_MODAL,
 	RESET_PRODUCT_DATA,
 	openModal,
 	removeProductAsync,
-	setProductCategoriesData,
 	setProductData,
-	setShoppingCartData,
+	setShoppingCart,
 } from '../../actions';
 import { ROLE } from '../../constants';
 import { Product } from './components';
 import { checkAccess } from '../../utils';
 
 const ProductPageContainer = ({ className }) => {
-	const navigate = useNavigate();
 	const [isLoading, setIsLoading] = useState(false);
+	const navigate = useNavigate();
 	const params = useParams();
 	const dispatch = useDispatch();
 	const product = useSelector(selectProduct);
-	const shoppingCart = useSelector(selectShoppingCart);
-	const categories = useSelector(selectProductCategories);
 	const userRole = useSelector(selectUserRole);
-
 	const isAllowed = checkAccess([ROLE.ADMIN, ROLE.SELLER], userRole);
 	const isLogin = userRole === ROLE.GUEST ? false : true;
-	const isCreating = !!useMatch('/products');
+	const isCreating = !!useMatch('/product/:id');
 
 	useLayoutEffect(() => {
 		dispatch(RESET_PRODUCT_DATA);
@@ -45,32 +36,29 @@ const ProductPageContainer = ({ className }) => {
 		setIsLoading(true);
 		Promise.all([
 			request(`/products/${params.id}`),
-			isLogin && request('/shoppingCart'),
 			request('/categories'),
+			isLogin ? request(`/shoppingCart`) : [],
 		])
-			.then(([product, shoppingCart, categories]) => {
-				dispatch(setProductData(product.data));
-				dispatch(
-					setShoppingCartData(
-						shoppingCart.data || [{ product: params.id, count: 1 }],
-					),
-				);
-				dispatch(setProductCategoriesData(categories.categories));
+			.then(([product, categories, shoppingCart]) => {
+				isLogin && dispatch(setShoppingCart(shoppingCart.data));
+				const [checkCart] = isLogin
+					? shoppingCart.data.filter((cart) => cart.product === product.data.id)
+					: [false];
+				const newProduct = !checkCart
+					? { ...product.data, count: 1 }
+					: { ...product.data, count: checkCart.count };
+
+				categories.categories.forEach((category) => {
+					if (category.group === product.data.group) {
+						dispatch(
+							setProductData({ ...newProduct, groupTitle: category.title }),
+						);
+					}
+				});
 			})
 			.finally(() => setIsLoading(false));
 	}, [dispatch, params.id, isLogin]);
 
-	let newProduct = { ...product, count: 1 };
-	shoppingCart.forEach((cart) => {
-		if (cart.product === product.id) {
-			newProduct = { ...product, count: cart.count };
-		}
-	});
-	categories.forEach((category) => {
-		if (category.group === product.group) {
-			newProduct = { ...newProduct, groupTitle: category.title };
-		}
-	});
 	const onProductAdd = () => {
 		dispatch(
 			openModal({
@@ -128,33 +116,39 @@ const ProductPageContainer = ({ className }) => {
 		setIsLoading(false);
 	};
 
-	isLoading && <Loader />; // лоадер
-
 	return (
-		<div className={className}>
-			<div className="product-control-panel">
-				<div className="path-to-product">
-					{newProduct.groupTitle} / {newProduct.productName}
-				</div>
-				{isAllowed && (
-					<div className="product-buttons">
-						<Button width={'170px'} onClick={() => onProductAdd(params.id)}>
-							Добавить
-						</Button>
-						<Button width={'170px'} onClick={() => onProductEdit(params.id)}>
-							Редактировать
-						</Button>
-						<Button
-							width={'170px'}
-							onClick={() => onProductRemove(params.id)}
-						>
-							Удалить
-						</Button>
+		<Loader isLoading={isLoading}>
+			<div className={className}>
+				<div className="product-control-panel">
+					<div className="path-to-product">
+						{product.groupTitle} / {product.productName}
 					</div>
-				)}
+					{isAllowed && (
+						<div className="product-buttons">
+							<Button
+								width={'170px'}
+								onClick={() => onProductAdd(params.id)}
+							>
+								Добавить
+							</Button>
+							<Button
+								width={'170px'}
+								onClick={() => onProductEdit(params.id)}
+							>
+								Редактировать
+							</Button>
+							<Button
+								width={'170px'}
+								onClick={() => onProductRemove(params.id)}
+							>
+								Удалить
+							</Button>
+						</div>
+					)}
+				</div>
+				<Product />
 			</div>
-			<Product product={newProduct} productId={params.id} />
-		</div>
+		</Loader>
 	);
 };
 

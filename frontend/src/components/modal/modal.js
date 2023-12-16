@@ -34,9 +34,12 @@ const ModalContainer = ({ className }) => {
 
 	const onSave = () => {
 		isEdit &&
-			dispatch(saveProductAsync(editingProduct.id, newProduct)).then(() =>
-				navigate(`/product/${editingProduct.id}`),
-			);
+			dispatch(saveProductAsync(editingProduct.id, newProduct)).then(() => {
+				if (editingProduct.id) {
+					navigate(`/products/${editingProduct.id}`);
+				}
+				navigate(`products/edit`);
+			});
 		onConfirm();
 	};
 

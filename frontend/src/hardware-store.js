@@ -58,11 +58,9 @@ export const HardwareStore = () => {
 					<Route path="/products/edit" element={<MainPage />} />
 					<Route path="/product/:id" element={<ProductPage />} />
 					<Route path="/shopping-cart/:id" element={<ShoppingCart />} />
-
 					<Route path="/login" element={<Authorization />} />
 					<Route path="/register" element={<Registration />} />
 					<Route path="/users" element={<Users />} />
-
 					<Route path="/loader" element={<Loader />} />
 					<Route path="*" element={<div>Ошибка</div>} />
 				</Routes>

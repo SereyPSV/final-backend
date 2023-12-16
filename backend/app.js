@@ -71,7 +71,8 @@ app.get("/categories", async (req, res) => {
 
 app.get("/products", async (req, res) => {
   const { products, lastPage } = await getProducts(
-    req.query.search,
+    req.query.searchPhrase,
+    req.query.searchGroup,
     req.query.limit,
     req.query.page,
     req.query.sort
@@ -167,7 +168,7 @@ app.delete(
   "/products/:id",
   hasRole([ROLES.ADMIN, ROLES.SELLER]),
   async (req, res) => {
-    await deleteProduct(req.params.id); // найти все корзины с продуктом, взять из них пользователей, у пользователей удалить корзину и удалить саму корзину
+    const shoppingCartToDelete = await deleteProduct(req.params.id); // найти все корзины с продуктом, взять из них пользователей, у пользователей удалить корзину и удалить саму корзину
 
     res.send({ error: null });
   }

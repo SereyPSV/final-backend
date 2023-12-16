@@ -1,16 +1,20 @@
 export * from './action-type';
+export * from './add-product-to-cart';
+export * from './set-shopping-cart';
 export * from './close-modal';
-export * from './load-product-async';
-export * from './load-shopping-cart-async';
+// export * from './load-product-async';
+export * from './load-products-async'; // *** //
+// export * from './load-shopping-cart-async';
 export * from './logout';
 export * from './open-modal';
 export * from './remove-product-async';
-export * from './remove-product-from-cart-async';
+export * from './remove-product-from-cart';
 export * from './reset-product-data';
 export * from './reset-products-data';
+export * from './reset-shopping-cart';
 export * from './save-product-async';
 export * from './set-product-categories-data';
 export * from './set-product-data';
 export * from './set-products-data';
-export * from './set-shopping-cart-data';
+export * from './set-shopping-cart';
 export * from './set-user';
