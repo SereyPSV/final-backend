@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
@@ -208,12 +210,8 @@ app.delete("/users/:id", hasRole([ROLES.ADMIN]), async (req, res) => {
   res.send({ error: null });
 });
 
-mongoose
-  .connect(
-    "mongodb+srv://SergStore:SergStore16460@cluster0.w6v8wcs.mongodb.net/store?retryWrites=true&w=majority"
-  )
-  .then(() => {
-    app.listen(port, (err) => {
-      err ? console.log(err) : console.log(`Server started on port ${port}`);
-    });
+mongoose.connect(process.env.DB_CONNECTION_STRING).then(() => {
+  app.listen(port, (err) => {
+    err ? console.log(err) : console.log(`Server started on port ${port}`);
   });
+});
