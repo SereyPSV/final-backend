@@ -13,4 +13,4 @@ RUN npm i
 
 EXPOSE 3003
 
-CMD [ "node". "app.js" ]
+CMD [ "node", "app.js" ]
