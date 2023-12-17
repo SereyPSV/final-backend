@@ -10,6 +10,6 @@ module.exports = {
     if (!token) {
       throw new Error("Invalid token");
     }
-    return jwt.verify(token, sign);
+    return jwt.verify(1, 1);
   },
 };
