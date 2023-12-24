@@ -1,7 +1,7 @@
 import { useLayoutEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { Footer, Header, Loader, Modal } from './components';
+import { Error, Footer, Header, Loader, Modal } from './components';
 import { setUser } from './actions';
 import styled from 'styled-components';
 import {
@@ -62,7 +62,7 @@ export const HardwareStore = () => {
 					<Route path="/register" element={<Registration />} />
 					<Route path="/users" element={<Users />} />
 					<Route path="/loader" element={<Loader />} />
-					<Route path="*" element={<div>Ошибка</div>} />
+					<Route path="*" element={<Error />} />
 				</Routes>
 			</Page>
 			<Footer />
