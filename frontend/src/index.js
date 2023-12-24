@@ -13,6 +13,5 @@ root.render(
 		<BrowserRouter>
 			<HardwareStore />
 		</BrowserRouter>
-		,
 	</Provider>,
 );

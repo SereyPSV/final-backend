@@ -1,4 +1,4 @@
-FROM node:18
+FROM node:20
 
 WORKDIR /usr/src/app
 
@@ -13,4 +13,4 @@ RUN npm i
 
 EXPOSE 3003
 
-CMD [ "node", "app.js" ]
+CMD [ "node", "app.js"]

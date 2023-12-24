@@ -27,23 +27,19 @@ const ProductContainer = ({ className }) => {
 	}, [count]);
 
 	const addInShoppingCart = () => {
-		console.log(shoppingCart);
 		request(`/shoppingCart`, 'POST', {
 			count: basketCounter,
 			productId: id,
 		}).then((newCart) => {
 			if (shoppingCart.length === 0) {
-				console.log('корзина пустая', newCart.data);
 				dispatch(setShoppingCart(newCart.data));
 			}
 			// if (
 			// 	shoppingCart.length === 0 ||
 			// 	shoppingCart.filter((cart) => cart.product === id).length === 0
 			// ) {
-			// 	console.log('add', newCart.data);
 			// 	dispatch(setShoppingCart([...shoppingCart, newCart.data]));
 			// } else {
-			// 	console.log('edit');
 			// 	dispatch(
 			// 		setShoppingCart(
 			// 			shoppingCart.map((cart) =>

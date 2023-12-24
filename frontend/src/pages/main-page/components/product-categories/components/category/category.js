@@ -4,6 +4,7 @@ const CategoryContainer = ({ id, className, category, searchGroup, setSearchGrou
 	const { group, title, imageUrl } = category;
 
 	const handleChangeCat = (event) => {
+		console.log(event.currentTarget);
 		if (event.target.checked) {
 			setSearchGroup([...searchGroup, group]);
 		} else {

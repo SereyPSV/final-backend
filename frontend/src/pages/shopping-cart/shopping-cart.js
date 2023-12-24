@@ -39,7 +39,6 @@ const ShoppingCartContainer = ({ className }) => {
 						}
 					});
 				});
-				console.log(newShoppingCart);
 				dispatch(setShoppingCart(newShoppingCart));
 			})
 			.finally(() => setIsLoading(false));

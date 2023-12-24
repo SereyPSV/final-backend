@@ -17,6 +17,6 @@ module.exports = async function (req, res, next) {
 
     next();
   } catch (e) {
-    res.send({ error: e.message || "Token error" });
+    res.send({ error: e.message || "Token 1 error" });
   }
 };

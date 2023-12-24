@@ -8,8 +8,8 @@ module.exports = {
   },
   verify(token) {
     if (!token) {
-      throw new Error("Invalid token");
+      throw new Error("Invalid - token");
     }
-    return jwt.verify(1, 1);
+    return jwt.verify(token, sign);
   },
 };
