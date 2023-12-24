@@ -34,6 +34,8 @@ const mapCategory = require("./helpers/mapCategory");
 const port = 3003;
 const app = express();
 
+app.use(express.static("../frontend/build"));
+
 app.use(cookieParser());
 app.use(express.json());
 
